@@ -1,0 +1,6 @@
+docker_tag: ruby
+filename: main.rb
+compile_cmd: echo
+run_cmd: ruby main.rb
+aliases:
+  - ruby

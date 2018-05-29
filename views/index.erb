@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #console {
+      max-width: 500px;
+      height: 200px;
+      max-height: 200px;
+      border: 1px solid black;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <textarea name="code" id="code" cols="30" rows="10">puts "hoge"</textarea>
+  <button onclick="main()">実行</button>
+  <br>
+  <pre id="console"></pre>
+</body>
+<script>
+  async function main() {
+    const c = document.getElementById("console")
+    await fetch('/run', {
+      body: JSON.stringify({code: document.getElementById("code").value}),
+      method: 'post'
+    }).then(function(res){
+      return res.json()
+    }).then(function(data){
+      console.log(data)
+      c.innerHTML = ''
+      data['stdout'].forEach(out => {
+        c.innerHTML += out
+      })
+      data['stderr'].forEach(err => {
+        c.innerHTML += err
+      })
+    })
+  }
+</script>
+</html>

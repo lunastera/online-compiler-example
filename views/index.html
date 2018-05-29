@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #console {
+      max-width: 500px;
+      height: 200px;
+      max-height: 200px;
+      border: 1px solid black;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <form action="/run" method="post">
+    <textarea name="code" id="code" cols="30" rows="10"></textarea>
+    <button type="submit">実行</button>
+    <button onclick="main">実行</button>
+  </form>
+  <br>
+  <pre id="console"></pre>
+</body>
+<script>
+  function main() {
+    const console = document.getElementById("console")
+    fetch('/run', {
+      body: document.getElementById("code").value,
+      method: 'post'
+    }).then(function(res){
+      const response = res.json()
+      console.log(res)
+    })
+  }
+</script>
+</html>
