@@ -1,9 +1,5 @@
 version: "2"
 
 services:
-  base:
-    image: sobreera/project4:base
-    build: .
   ruby:
-    image: sobreera/project4:ruby
-    build: lang/ruby
+    build: ./lang/ruby

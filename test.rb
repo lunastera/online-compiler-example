@@ -1,5 +1,5 @@
-# require 'docker'
-# require 'pp'
+require 'docker'
+require 'pp'
 
 # class CodeRunner
 #   def initialize(docker_image)
@@ -30,6 +30,15 @@
 
 # container.remove
 
-tes = "puts 'hoge'"
-
-puts tes.gsub("'", "\\\\'")
+container = Docker::Container.get('c2c936782e5c')
+container.start
+# str = container.exec(
+#   ['bash', '-c', 'echo "puts \'hoge\'" >> main.rb'],
+#   stdout: true
+# )
+str = container.exec(
+  ['ruby', 'main.rb'],
+  stdout: true
+)
+pp str
+container.stop

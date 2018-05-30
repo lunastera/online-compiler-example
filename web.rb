@@ -16,23 +16,16 @@ get '/run' do
 end
 
 post '/run' do
-  # image = Docker::Image.build_from_dir('./lang/ruby')
-  # container = Docker::Container.create(
-  #   'Image' => '452a96d81c30',
-  #   'OpenStdin' => true
-  #   # 'StdinOnce' => true
-  # )
+  image = Docker::Image.build_from_dir('./lang/ruby')
+  container = Docker::Container.create(
+    'Image' => '452a96d81c30',
+    'OpenStdin' => true
+    # 'StdinOnce' => true
+  )
   container = Docker::Container.get('c2c936782e5c')
   # pp container
 
   container.start
-  # container.exec(
-  #   ['rm', 'main.rb']
-  # )
-  # container.exec(
-  #   ['touch', 'main.rb']
-  # )
-  # container.exec(['echo', "#{params[:code]} > main.rb"])
 
   params ||= JSON.parse request.body.read
   params['code'].gsub!(/[']/) { |q| q + '\\' + q + q }
