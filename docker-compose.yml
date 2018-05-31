@@ -3,3 +3,5 @@ version: "2"
 services:
   ruby:
     build: ./lang/ruby
+    volumes:
+      - ./files/:/tmp/files/

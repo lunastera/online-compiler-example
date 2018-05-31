@@ -3,6 +3,10 @@ require 'docker'
 require 'pp'
 require 'json'
 
+PATH = './files/main.rb'.freeze
+
+puts "#{__dir__}/files"
+
 before do
   headers 'Access-Control-Allow-Origin' => '*'
 end
@@ -16,30 +20,35 @@ get '/run' do
 end
 
 post '/run' do
-  image = Docker::Image.build_from_dir('./lang/ruby')
+  params ||= JSON.parse request.body.read
+  File.open(PATH, 'w') do |file|
+    file.puts params['code']
+  end
   container = Docker::Container.create(
-    'Image' => '452a96d81c30',
-    'OpenStdin' => true
-    # 'StdinOnce' => true
+    'Image' => 'c474573555e8',
+    'OpenStdin' => true,
+    'StdinOnce' => true,
+    'HostConfig' => {
+      'Mounts' => [
+        {
+          'Target' => '/tmp/files',
+          'Source' => "#{__dir__}/files",
+          'Type' => 'bind'
+        }
+      ]
+    }
   )
-  container = Docker::Container.get('c2c936782e5c')
-  # pp container
 
   container.start
-
-  params ||= JSON.parse request.body.read
-  params['code'].gsub!(/[']/) { |q| q + '\\' + q + q }
-  pp params['code']
-  command = "ruby -e '#{params['code']}'"
-  pp command
-  puts command
+  # params['code'].gsub!(/[']/) { |q| q + '\\' + q + q }
   result = container.exec(
-    ['bash', '-c', command],
-    stderr: true,
-    stdout: true
+    ['ruby', '/tmp/files/main.rb'],
+    stdout: true,
+    stderr: true
   )
   # pp result
   container.stop
+  container.remove
 
   { stdout: result[0], stderr: result[1] }.to_json
 end
